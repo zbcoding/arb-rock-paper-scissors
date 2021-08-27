@@ -2,14 +2,15 @@
 
 pragma solidity ^0.8.0;
  
-import "../node_modules/openzeppelin-contracts/token/ERC20/IERC20.sol";
-import "../node_modules/openzeppelin-contracts/math/SafeMath.sol";
-import "../node_modules/solidity-stringutils/strings.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "../solidity-stringutils/src/strings.sol";
 //https://github.com/Arachnid/solidity-stringutils
 
 
 contract RockPaperScissors {
   using strings for *;
+  using SafeMath for uint256;
   //1 = rock 2 = paper 3 = scissors
   enum Choice {None, Rock, Paper, Scissors}
   bytes32 private encrypted1;
@@ -34,13 +35,8 @@ contract RockPaperScissors {
   string indexed _winAddress, 
   int256 _totalAmountBet);
 
-
-  using SafeMath for uint256;
-  
-
 	//constructor(uint256 total) public { for older solidity
   constructor() payable {
-  //todo: add set owner so that owner can withdraw fees generated to their address
   owner = payable(msg.sender);
   }
 
@@ -49,7 +45,6 @@ contract RockPaperScissors {
         _;
     }
 
-  
   modifier onlyOwner() {
     require(msg.sender == owner);
     _;
@@ -130,7 +125,7 @@ contract RockPaperScissors {
     
     //logic of rock paper scissors winning/ties
     if (player1Move.toSlice().rfind("-".toSlice()) 
-    == player2Move.toSlice().rfind("-".toSlice())) {
+    .equals(player2Move.toSlice().rfind("-".toSlice()))) {
     winAddress = "Tie";
     //pay back both addresses' bet with each contributing to fee
     transfer(address1, (995*address1bet)/1000);
@@ -138,33 +133,33 @@ contract RockPaperScissors {
     }
     /*var s = "A B C B D".toSlice();
     s.rfind("B".toSlice()); // "A B C B"*/
-    if (player1Move.toSlice().contains("Rock") 
-    && player2Move.toSlice().contains("Paper")) { //rock, paper
+    if (player1Move.toSlice().contains("Rock".toSlice()) 
+    && player2Move.toSlice().contains("Paper".toSlice())) { //rock, paper
       winAddress = toAsciiString(address2);
       transfer(address2, (winAmount));
     } 
-    if (player1Move.toSlice().contains("Rock") 
-    && player2Move.toSlice().contains("Scissors")) { //rock, scissors
+    if (player1Move.toSlice().contains("Rock".toSlice()) 
+    && player2Move.toSlice().contains("Scissors".toSlice())) { //rock, scissors
       winAddress = toAsciiString(address1);
       transfer(address1, (winAmount));
     } 
-    if (player1Move.toSlice().contains("Paper") 
-    && player2Move.toSlice().contains("Rock")) { //paper, rock
+    if (player1Move.toSlice().contains("Paper".toSlice()) 
+    && player2Move.toSlice().contains("Rock".toSlice())) { //paper, rock
       winAddress = toAsciiString(address1);
       transfer(address1, (winAmount));
     }
-    if (player1Move.toSlice().contains("Paper") 
-    && player2Move.toSlice().contains("Scissors")) { //paper, scissors
+    if (player1Move.toSlice().contains("Paper".toSlice()) 
+    && player2Move.toSlice().contains("Scissors".toSlice())) { //paper, scissors
       winAddress = toAsciiString(address2);
       transfer(address2, (winAmount));
     }  
-    if (player1Move.toSlice().contains("Scissors") 
-    && player2Move.toSlice().contains("Rock")) { //scissors, rock
+    if (player1Move.toSlice().contains("Scissors".toSlice()) 
+    && player2Move.toSlice().contains("Rock".toSlice())) { //scissors, rock
       winAddress = toAsciiString(address2);
       transfer(address2, (winAmount));
     } 
-    if (player1Move.toSlice().contains("Scissors") 
-    && player2Move.toSlice().contains("Paper")) { //scissors, paper
+    if (player1Move.toSlice().contains("Scissors".toSlice()) 
+    && player2Move.toSlice().contains("Paper".toSlice())) { //scissors, paper
       winAddress = toAsciiString(address1);
       address1.transfer(winAmount);
     } 
