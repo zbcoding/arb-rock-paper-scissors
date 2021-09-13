@@ -26,7 +26,6 @@ contract RockPaperScissors {
   //add event for wager
   //add event for choice reveal
   
-  //todo: add timeout so contract refunds if bets are fully placed
   //uint256 timestart;
   //uint256 constant timeout = 30 minutes;
 
@@ -40,6 +39,7 @@ contract RockPaperScissors {
   owner = payable(msg.sender);
   }
 
+  //modifiers
   modifier notAlreadyBet() {
         require(msg.sender != address1 && msg.sender != address2);
         _;
@@ -167,7 +167,6 @@ contract RockPaperScissors {
     uint256 totalAmount = address1bet + address2bet;
     emit game(address1, address2, winAddress, int256(totalAmount));
 
-
     reset();
 
   }
@@ -185,11 +184,14 @@ contract RockPaperScissors {
   function timeOut() external {
     if (time > 0 && block.timestamp > time + 4 hours) {
       //return player money
+      address1.transfer(address1bet);
+      address2.transfer(address2bet);
+      //reset the game
       reset();
     }
   }
 
-  //helper function  
+  //helper functions  
   function toAsciiString(address x) internal pure returns (string memory) {
     bytes memory s = new bytes(40);
     for (uint i = 0; i < 20; i++) {
